@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <artifactId>RestAuth</artifactId>
+    <groupId>begining</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+    <groupId>begining</groupId>
+    <artifactId>RestAuth-ear</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>ear</packaging>
+
+    <name>RestAuth-ear</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+  
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <version>6</version>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>begining</groupId>
+            <artifactId>RestAuth-ejb</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>ejb</type>
+            <!--
+            http://stackoverflow.com/questions/20100065/how-do-i-specify-ejb-reference-in-war-project-in-maven
+            WAR側のpom.xmlでEJBコンテナ(RestAuth-ejb)に依存しているので、
+            依存性ビルド時にRestAuth-ejbもコンパイルされ、
+            インストール(ローカルリポジトリに登録)される。
+            そのため、earのpom.xmlでデフォルトのスコープであると
+            再度コンパイルされ配置する動作になるため 
+            Exception during lifecycle processing が発生していた。
+            scopeタグにprovidedを設定し、各プロジェクト(war, ejb, ear)を消去して
+            依存性ビルドすることで解決した。
+            -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>begining</groupId>
+            <artifactId>RestAuth-web</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+</project>
