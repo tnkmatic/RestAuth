@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
             name  = BOOK_SQL.NAMED_FIND_BOOK_BY_ISBN,
             query = BOOK_SQL.QUERY_FIND_BOOK_BY_ISBN)
 })
-public class Book implements Serializable {
+public class BookEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

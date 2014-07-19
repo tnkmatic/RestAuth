@@ -6,15 +6,16 @@
 
 package begining.restauth.ejb.service;
 
-import begining.restauth.jpa.entity.Book;
+import begining.restauth.ejb.validation.BookValidation;
+import begining.restauth.jpa.entity.BookEntity;
 import java.util.List;
+import javax.ws.rs.core.Response;
 
 /**
  *
  * @author Eiichi Tanaka
  */
 public interface BookResourceLocal {
-    public List<Book> getAllBooks();
-    public Book getBook(Long id);
-    
+    public List<BookEntity> getBooks();
+    public Response getBook(final BookValidation book);
 }

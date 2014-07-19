@@ -10,6 +10,9 @@
 
 <c:set var="path" value="client" />
 
+<script type="text/javascript" src="../jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="getAllBooks.js"></script>
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -23,18 +26,19 @@
             <tr>
                 <td>1</td>
                 <td>
-                    <a href="<%= request.getContextPath() %>/${path}/getAllBooks.html">
-                    本の全件検索</a>
+                    <form method="GET">
+                        <input type="button" id="getbooks" value="全件検索" />
+                    </form>
                 </td>
             </tr>
-            <%--            
             <tr>
                 <td>2</td>
                 <td>
-                    <a href="<%= request.getContextPath() %>/${path}/bookSearch503.jsp">
-                    リソースキー指定の検索</a>
+                    <input type="text" id="isbn" />
+                    <input type="button" id="getbook" value="リソースキー(ISBN)指定検索" />
                 </td>
             </tr>
+            <%--            
             <tr>
                 <td>3</td>
                 <td>
@@ -65,5 +69,6 @@
             </tr>
             --%>
         </table>
+        <div id="result"></div>
     </body>
 </html>

@@ -6,7 +6,7 @@
 
 package begining.restauth.ejb.bean;
 
-import begining.restauth.jpa.entity.Book;
+import begining.restauth.jpa.entity.BookEntity;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Eiichi Tanaka
  */
 public interface BookBeanLocal {
-    public List<Book> getAllBooks();
-    public Book getBook();
-    public void createBook(final Book book);
+    public List<BookEntity> getBooksService();
+    public BookEntity getBookService(final String isbn);
+    public void createBookService(final BookEntity book);
 }

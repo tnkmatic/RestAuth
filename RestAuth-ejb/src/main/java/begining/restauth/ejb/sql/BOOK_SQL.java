@@ -16,10 +16,10 @@ public class BOOK_SQL {
     
     //全件検索クエリ    
     public final static String NAMED_FIND_ALL_BOOKS = "findAllBooks";
-    public final static String QUERY_FIND_ALL_BOOKS = "SELECT b FROM Book b";
+    public final static String QUERY_FIND_ALL_BOOKS = "SELECT b FROM BookEntity b";
     
     //ISBN指定クエリ
     public final static String NAMED_FIND_BOOK_BY_ISBN = "findBookByIsbn";
     public final static String QUERY_FIND_BOOK_BY_ISBN = 
-            "SELECT b FROM Book b WHERE b.isbn = :" + PARAM_BOOK_ISBN;
+            "SELECT b FROM BookEntity b WHERE b.isbn = :" + PARAM_BOOK_ISBN;
 }

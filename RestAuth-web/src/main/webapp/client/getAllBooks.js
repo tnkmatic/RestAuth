@@ -1,7 +1,9 @@
+var resourcePath = 'http://localhost:8080/RestAuth-web/restAuth/books';
+
 $(function() {
-    $('#getall').click(function() {
+    $('#getbooks').click(function() {
        $.getJSON(
-        'http://localhost:8080/RestAuth-web/restAuth/books'
+            resourcePath
        )
        .done(function(data){
          var result = document.getElementById('result');
@@ -17,6 +19,36 @@ $(function() {
          }
          str += '</table>';
          result.innerHTML = str;
+       })
+       .fail(function(jqXHR, textStatus, errorThrown) {
+            var result = document.getElementById('result');
+            result.innerHTML = jqXHR.responseText;
+       });
+    });
+});
+
+$(function() {
+    $('#getbook').click(function() {
+        var isbn = $('#isbn').val();
+        $.getJSON(
+            resourcePath + '/' + isbn
+        )
+       .done(function(data) {
+         var result = document.getElementById('result');
+         result.innerHTML = '';
+         
+         var str = '<table border="1">';
+         str += '<tr><td>' 
+                + data['isbn'] + '</td><td>' 
+                + data['title'] + '</td><td>' 
+                + data['description'] + '</td><td>' 
+                + data['price'] + '</td></tr>'; 
+         str += '</table>';
+         result.innerHTML = str;
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            var result = document.getElementById('result');
+            result.innerHTML = jqXHR.responseText;
        });
     });
 });

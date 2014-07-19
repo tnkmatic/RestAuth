@@ -10,11 +10,33 @@
         </session-timeout>
     </session-config>
     
+    <!--
+        [Jerseyコンテナの設定]
+        1. Jerseyがインターセプト後に処理を転送するリソースクラスが入っている
+           パッケージの指定
+           →WebコンテナはApplicationConfigのみで、リソースクラスがEJBコンテナのみに
+            存在しても転送されるように
+        
+        2. "1" を設定すると、ApplicationConfig.javaの@ApplicationPathの設定が上書き
+        　されてしまい、インターセプトするパスが無くなるため、<servlet-mapping>の設定が必要
+          →Jerseyにインターセプトさせるパス
+
+        ※なお、ApplicationConfig.javaに@ApplicationPathのアノテーションが
+         付与されていると、[package path + ApplicationConfig] で、servlet-mapping
+          が自動的に登録される(今回の場合 begining.restauth.service.ApplicationConfig)
+          そのため、ApplicationConfig.javaに@ApplicationPathのアノテーションを
+          記載したままにしてしまい、かつweb.xmlで、[package path + ApplicationConfig]
+          以外の名前にしてしまうと、同一servlet-classに対する重複登録となってしまい
+          コンテナ起動時にSEVEREでのエラーが出力される
+          (ApplicationConfigに@ApplicationPathを付与しなければ、web.xmlに指定する
+           servlet-nameは任意で良い)
+    -->
+    
     <servlet>
         <!-- 
             Jerseyのコンテナクラスに対してinit-paramを設定(リソースクラスが入っているパッケージの指定)
         -->
-        <servlet-name>ResourceConfig</servlet-name>
+        <servlet-name>ApplicationConfig</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
@@ -26,28 +48,9 @@
         <!-- 
             Jerseyコンテナにインターセプトさせるパスの指定
         -->
-        <servlet-name>ResourceConfig</servlet-name>
+        <servlet-name>ApplicationConfig</servlet-name>
         <url-pattern>/restAuth/*</url-pattern>
     </servlet-mapping>
-    
-<!--    
-    <filter>
-        <filter-name>ResourceConfigFilter</filter-name>
-        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
-        <init-param>
-          <param-name>javax.ws.rs.Application</param-name>
-          <param-value>begining.restauth.service.RestAuthConfig</param-value>
-        </init-param>
-        <init-param>
-          <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
-          <param-value>true</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>ResourceConfigFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
--->
 
     <login-config>
         <auth-method>FORM</auth-method>
