@@ -6,20 +6,18 @@
 
 package begining.restauth.ejb.validation;
 
-import java.util.List;
-
 /**
  *
  * @author Eiichi Tanaka
  */
-public class ResponseValidation {
-    private List<ErrorValidation> error;
+public class ErrorValidation {
+    private String errorMessage;
 
-    public List<ErrorValidation> getError() {
-        return error;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setError(List<ErrorValidation> error) {
-        this.error = error;
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

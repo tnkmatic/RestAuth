@@ -8,6 +8,7 @@ package begining.restauth.ejb.service;
 
 import begining.restauth.ejb.bean.BookBean;
 import begining.restauth.ejb.validation.BookValidation;
+import begining.restauth.ejb.validation.ErrorValidation;
 import begining.restauth.ejb.validation.ResponseValidation;
 import begining.restauth.jpa.entity.BookEntity;
 import com.google.gson.Gson;
@@ -28,9 +29,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import static javax.ws.rs.client.Entity.json;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.SecurityContext;
 
 /**
@@ -66,11 +68,11 @@ public class BookResource implements BookResourceLocal
     @Override
     @GET
     @Path("{isbn}")
-    //@Produces({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     @RolesAllowed({"administrator", "general"})
     public Response getBook (@BeanParam final BookValidation book) {
-        Response response;
-        
+        ResponseBuilder response;
+
         final Principal p = securityContext.getUserPrincipal();
         logger.log(Level.INFO, "{0} - principal:{1} - isbn:{2}",
                 new String[]{
@@ -82,34 +84,42 @@ public class BookResource implements BookResourceLocal
         Set<ConstraintViolation<BookValidation>> errorSet =
                 validator.validate(book);
         
+        final List<ErrorValidation> errorList = new ArrayList<>();
         if (errorSet.size() > 0) {
-            final StringBuilder sb = new StringBuilder();
-            final List<String> messages = new ArrayList<>();
             for (final ConstraintViolation<BookValidation> error : errorSet) {
-                messages.add(error.getMessage());
+                ErrorValidation ev = new ErrorValidation();
+                ev.setErrorMessage(error.getMessage());
+                errorList.add(ev);
                 logger.log(Level.WARNING, "{0}", error.getMessage());
             }
             
             final ResponseValidation rv = new ResponseValidation();
-            rv.setMessages(messages);
-            
-            //レスポンス(BAD_REQUEST)
-            response =  Response.status(
-                    Response.Status.BAD_REQUEST).entity("Validation Error").build();
+            rv.setError(errorList);
+
+            //レスポンス作成(BAD_REQUEST)
+            Gson gson = new Gson();
+            response = Response.status(Response.Status.BAD_REQUEST)
+                    //@Producesで指定してもcharsetが設定されない
+                    .header(HttpHeaders.CONTENT_TYPE
+                                , MediaType.APPLICATION_JSON + ";" + "charset=utf-8")
+                    .entity(gson.toJson(rv));
         } else {
             final BookEntity be = bookBean.getBookService(book.getIsbn());
             if (be == null) {
                 //レスポンス(NOT_FOUND)
-                response = Response.status(
-                        Response.Status.NOT_FOUND).entity("BookEntity Not Found").build();
+                response = Response.status(Response.Status.NOT_FOUND)
+                        //@Producesで指定してもcharsetが設定されない
+                        .header(HttpHeaders.CONTENT_TYPE
+                                , MediaType.APPLICATION_JSON + ";" + "charset=utf-8")
+                        .entity("BookEntity Not Found");
             } else {
                 //レスポンス(OK)
                 Gson gson = new Gson();
                 String json = gson.toJson(be);
-                response = Response.ok(json, MediaType.APPLICATION_JSON).build();
+                response = Response.ok(json);
             }
         }
 
-        return response;
+        return response.build();
     }
 }
