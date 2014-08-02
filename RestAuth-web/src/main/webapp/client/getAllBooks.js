@@ -47,8 +47,15 @@ $(function() {
          result.innerHTML = str;
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
+            var text = "";
+            var body = JSON.parse(jqXHR.responseText);
+            for (var i in body.error) {
+                //alert(body.error[i].errorMessage);
+                text += body.error[i].errorMessage + '<br>';
+            }
+
             var result = document.getElementById('result');
-            result.innerHTML = jqXHR.responseText;
+            result.innerHTML = text;
        });
     });
 });
